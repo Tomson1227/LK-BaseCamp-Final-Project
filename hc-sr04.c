@@ -26,15 +26,33 @@ MODULE_DESCRIPTION("Driver for HC-SR04 ultrasonic sensor");
     #define  IRQF_DISABLED 0
 #endif
 
-typedef staruct {
-    static ktime_t start;
-    static ktime_t end;
+typedef struct module_s {
+    ktime_t start;
+    ktime_t end;
     volatile bool loop;
     double distance;
     int irq;
 }   module_t;
 
 module_t hc_sr04;
+
+// Interrupt handler on ECHO signal
+static irqreturn_t gpio_isr(int irq, void *data)
+{
+    ktime_t current_time;
+    module_t *module = (module_t *)data;
+
+    current_time = ktime_get();
+    
+    if (gpio_get_value(HCSR04_INPUT)) {
+        module->start = current_time;
+    } else {
+        module->end = current_time;
+        module->loop = 0;
+    }
+
+	return IRQ_HANDLED;
+}
 
 static int gpio_init(module_t *module)
 {
@@ -54,7 +72,7 @@ static int gpio_init(module_t *module)
 
 
 	module->irq = gpio_to_irq(HCSR04_INPUT);
-	err = request_irq(gpio_irq, gpio_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_DISABLED , "hc-sr04.trigger", module);
+	err = request_irq(module->irq , gpio_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_DISABLED , "hc-sr04.trigger", module);
 
     if(err)
         return 3;
@@ -74,18 +92,19 @@ static ssize_t hc_sr04_value_read(struct class *class, struct class_attribute *a
 	udelay(10);
 	gpio_set_value(HCSR04_OUTPUT, 0);
 
-	hc_sr04->start = hc_sr04->end = 0;
-    hc_sr04->loop = 1;
+	hc_sr04.start = hc_sr04.end = 0;
+    hc_sr04.loop = 1;
 
-	while (hc_sr04->loop);
+	while (hc_sr04.loop);
     
-    hc_sr04->distance = ktime_to_us(ktime_sub(hc_sr04->end ,hc_sr04->start)) * 170; // [mm]
+    hc_sr04.distance = ktime_to_us(ktime_sub(hc_sr04.end ,hc_sr04.start)) * 170; // [mm]
 
-	return sprintf(buf, "Distance: %lf [mm]\n", hc_sr04->distance); 
+	return sprintf(buf, "Distance: %lf [mm]\n", hc_sr04.distance); 
 }
 
 // Sysfs definitions for hc_sr04 class
 static struct class_attribute hc_sr04_class_attrs[] = {
+// static struct attribute_group hc_sr04_class_attrs[] = {
 	__ATTR(value,	S_IRUGO | S_IWUSR, hc_sr04_value_read, hc_sr04_value_write),
 	__ATTR_NULL,
 };
@@ -95,30 +114,13 @@ static struct class hc_sr04_class = {
 	.name =			"hc_sr04",
 	.owner =		THIS_MODULE,
 	.class_attrs =	hc_sr04_class_attrs,
+    // .class_groups =	hc_sr04_class_attrs
 };
-
-// Interrupt handler on ECHO signal
-static irqreturn_t gpio_isr(int irq, void *data)
-{
-    ktime_t current_time;
-    module_t *module = (module_t *data);
-
-    current_time = ktime_get();
-    
-    if (gpio_get_value(HCSR04_INPUT)) {
-        module->start = current_time;
-    } else {
-        module->end = current_time;
-        module->loop = 0;
-    }
-
-	return IRQ_HANDLED;
-}
 
 static int hc_sr04_init(void)
 {	
 	if (class_register(&hc_sr04_class) < 0 ||
-        gpio_init(hc_sr04)) 
+        gpio_init(&hc_sr04)) 
         return -1;
 
 	printk(KERN_INFO "HC-SR04 driver initialized.\n");
@@ -128,7 +130,7 @@ static int hc_sr04_init(void)
  
 static void hc_sr04_exit(void)
 {
-    free_irq(hc_sr04->irq, NULL);
+    free_irq(hc_sr04.irq, NULL);
 	gpio_free(HCSR04_OUTPUT);
 	gpio_free(HCSR04_INPUT);
 	class_unregister(&hc_sr04_class);
