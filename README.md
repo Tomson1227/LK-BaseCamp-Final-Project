@@ -8,10 +8,10 @@ Oleksandr Povshenko
 Linux Kernel Course 2.0 - summer 2021
 
 ## Project begin date:
-19.08.2011
+19.09.2021
 
 ## Project end date:
-22.09.2011
+till now
 
 ## Hardware
 Raspberry Pi Zero W V1.1 / BeagleBone Black
