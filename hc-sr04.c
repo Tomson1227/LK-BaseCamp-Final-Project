@@ -13,13 +13,13 @@
 #include <linux/kdev_t.h>
 #include <linux/interrupt.h> 
 
+#include "pin_definition.h"
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Oleksandr Povshenko");
 MODULE_DESCRIPTION("Driver for HC-SR04 ultrasonic sensor");
 
-#define AM335_GPIO(bank,line)  (32 * bank + line)
-#define HCSR04_INPUT    AM335_GPIO(1, 15)       // PIN 47
-#define HCSR04_OUTPUT   AM335_GPIO(0, 27)       // PIN 27
+
 
 // adaptation for kernels >= 4.1.0
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,0)
@@ -29,7 +29,7 @@ MODULE_DESCRIPTION("Driver for HC-SR04 ultrasonic sensor");
 typedef struct module_s {
     ktime_t start;
     ktime_t end;
-    volatile bool loop;
+    volatile bool loop;`
     double distance;
     int irq;
 }   module_t;
