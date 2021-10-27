@@ -5,21 +5,7 @@
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
-#include "pin_definition.h"
-
-#define CONFIGURETION_REG_A 	0x00
-#define CONFIGURETION_REG_B 	0x01
-#define MODE_REG 		0x02
-#define REG_AXIS_X_MSB 	0x03
-#define REG_AXIS_X_LSB 	0x04
-#define REG_AXIS_Y_MSB 	0x05
-#define REG_AXIS_Y_LSB 	0x06
-#define REG_AXIS_Z_MSB 	0x07
-#define REG_AXIS_Z_LSB 	0x08
-#define STATUS_REG 		0x09
-#define IDENTIFICATION_REG_A 	0x0A
-#define IDENTIFICATION_REG_B 	0x0B
-#define IDENTIFICATION_REG_C 	0x0C
+#include "hmc5883l_driver.h"
 
 struct hmc5883l {
 	struct i2c_client *client;
@@ -93,7 +79,6 @@ static int hmc5883l_probe(struct i2c_client *drv_client, const struct i2c_device
 
 static int hmc5883l_remove(struct i2c_client *drv_client)
 {
-
 	hmc5883l.client = 0;
 	dev_info(&drv_client->dev, "i2c driver removed\n");
 	
@@ -133,7 +118,7 @@ static int HMC5883L_init(void)
 		return ret;
 	}
 
-	attr_class = class_create(THIS_MODULE, "HMC5883L");
+	attr_class = class_create(THIS_MODULE, "hmc5883l");
 
 	if (IS_ERR(attr_class)) {
 		ret = PTR_ERR(attr_class);
@@ -192,9 +177,8 @@ static void HMC5883L_exit(void)
 module_init(HMC5883L_init);
 module_exit(HMC5883L_exit);
 
-
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Oleksandr Povshenko");
-MODULE_DESCRIPTION("Driver for IIC magnetometer module HMC5883L");
+MODULE_DESCRIPTION("Driver for I2C magnetometer module HMC5883L");
 
 /****************************************************************************************/
