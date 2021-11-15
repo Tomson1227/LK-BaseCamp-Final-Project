@@ -1,12 +1,19 @@
-SRC := src/
-INC := inc/
+ifndef MODE
+MODE=m
+endif
 
-SRC_C = $(wildcard $(SRC)*.c)
-INC_C = $(wildcard $(INC)*.h)
+MAKE_M = make
 
-obj-m := hmc5883l_driver.o hc-sr04.o stepper_motor.o
+DIR_LIST := $(shell find -type d \( ! -iname "." \) -printf '%p ')
 
-ALL:
-	$(MAKE) -C ~/repos/busybox/_install/lib/modules/5.9.16/build M=$(PWD) modules
-clean:
-	$(MAKE) -C ~/repos/busybox/_install/lib/modules/5.9.16/build M=$(PWD) clean
+all: exports $(DIR_LIST)
+
+exports:
+	export ARCH=arm
+	export PATH=/opt/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin:$PATH
+	export CROSS_COMPILE="/opt/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-"
+
+$(DIR_LIST):
+	$(MAKE_M) MODE=$(MODE) -C ./$@ ALL
+
+.PHONY: $(DIR_LIST)
