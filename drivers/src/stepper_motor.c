@@ -24,6 +24,12 @@ static void small_steps(struct stepper_s *motor);
 
 struct stepper_s motor;
 
+static const struct of_device_id stepper_keys[] = {
+    { .compatible = "stepper_keys", },
+    {},
+};
+MODULE_DEVICE_TABLE(of, stepper_keys);
+
 static int thread_func(void *data)
 {
     struct stepper_s *motor = (struct stepper_s *) data;

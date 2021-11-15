@@ -1,0 +1,45 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+	fragment@0 {
+		target = <&gpio1>;
+		__overlay__ {
+			stepper: stepper {
+				compatible = "stepper";
+
+				phase@1 {
+					gpios = <&gpio1 44 GPIO_ACTIVE_LOW>;
+					default-state = "off";
+				};
+				phase@2 {
+					gpios = <&gpio1 26 GPIO_ACTIVE_LOW>;
+					default-state = "off";
+				};
+				phase@3 {
+					gpios = <&gpio1 46 GPIO_ACTIVE_LOW>;
+					default-state = "off";
+				};
+				phase@4 {
+					gpios = <&gpio1 65 GPIO_ACTIVE_LOW>;
+					default-state = "off";
+				};
+			};
+		};
+	};
+
+    fragment@1 {
+        target = <&i2c2>;
+        __overlay__{
+            status = "okay";
+			#address-cells = <1>;
+            #size-cells = <0>;
+            magnetometr@1e {
+				compatible = "hnw,hmc5883l";
+				reg = <0x1e>;
+			};
+        };
+    };
+};
