@@ -14,11 +14,14 @@ Linux Kernel Course 2.0 - summer 2021
 till now
 
 ## Hardware
-Raspberry Pi Zero W V1.1 / BeagleBone Black
+BeagleBone Black
 micro SDHC 16GB
 Ultrasound module HC-SR04
 Step motor
+Magnetometr
 
 ## Software
-HC-SR04 driver (kernel module)
+HMC5883l driver (kernel module)
 Step motor driver (kernel module)
+HC-SR04 driver (kernel module)
+DistanceMesure (userspace programm)
