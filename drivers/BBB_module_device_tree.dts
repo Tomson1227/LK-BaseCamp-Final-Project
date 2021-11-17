@@ -4,6 +4,7 @@
 / {
     compatible = "ti,beaglebone", "ti,beaglebone-black";
 
+	exlusive-use = "P0_26", "P1_12", "P1_14", "P2_1";
 	fragment@0 {
 		target = <&gpio1>;
 		__overlay__ {
@@ -36,8 +37,8 @@
             status = "okay";
 			#address-cells = <1>;
             #size-cells = <0>;
-            magnetometr@1e {
-				compatible = "hnw,hmc5883l";
+            magnetometr: magnetometr@1e {
+				compatible = "hmc5883l";
 				reg = <0x1e>;
 			};
         };

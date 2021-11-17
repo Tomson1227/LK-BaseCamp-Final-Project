@@ -13,6 +13,7 @@ MODULE_DESCRIPTION("Driver for stepper motor");
 #define GPIO_NUMB 4
 
 struct stepper_s {
+    struct platform_device *pdev;
     struct task_struct *thread;
     u8 gpio[4];
     int speed;
@@ -24,11 +25,52 @@ static void small_steps(struct stepper_s *motor);
 
 struct stepper_s motor;
 
+static int stepper_probe(struct platform_device *pdev)
+{
+	int ret;
+	struct device *dev = &pdev->dev;
+	struct device_node *node = dev->of_node;
+
+    motot.pdev = pdev;
+
+	ret = of_property_read_u32_array(node, "pins", lcd_key_dev.pins, );
+	if (!ret){
+		printk(KERN_INFO "STEPPER: Used pins: %d %d %d %d\n", 
+            motor.gpio[0], motor.gpio[1], motor.gpio[2], motor.gpio[3]);
+	} else {
+		printk(KERN_WARNING "STEPPER: Used default pins\n");
+        motor.gpio[0] = STEPPER_OUT_0;
+        motor.gpio[1] = STEPPER_OUT_1;
+        motor.gpio[2] = STEPPER_OUT_2;
+        motor.gpio[3] = STEPPER_OUT_3;
+	}
+
+	dev_info(&pdev->dev, "device probed\n");
+
+	return 0;
+}
+
+static int stepper_remove(struct platform_device* pdev)
+{
+	printk(KERN_INFO "STEPPER: driver removed");
+	return 0;
+}
+
 static const struct of_device_id stepper_keys[] = {
-    { .compatible = "stepper_keys", },
+    { .compatible = "stepper", },
     {},
 };
 MODULE_DEVICE_TABLE(of, stepper_keys);
+
+static struct platform_driver stepper_driver = {
+    .probe = stepper_probe,
+    .remove = stepper_remove,
+    .driver = {
+        .name = "lcd-key-drv",
+        .of_match_table = of_match_ptr(lcd_key_of_match),
+        .owner = THIS_MODULE,
+    },
+};
 
 static int thread_func(void *data)
 {

@@ -90,7 +90,7 @@ static int hmc5883l_probe(struct i2c_client *drv_client, const struct i2c_device
 	hmc5883l.client = drv_client;
 	set_device_mode(drv_client);
 	hmc5883l_read_data();
-
+	
 	// node =	drv_client->dev.of_node;
 	// of_property_read_u32(node, "reg", &reg);
 	// dev_info(&drv_client->dev, "reg = %d\n", reg);
