@@ -26,7 +26,9 @@ typedef struct s_hmc5883l {
 }              t_hmc5883l;
 
 int init_hms5883l(t_hmc5883l *hmc5883l);
-void close_hms5883l(t_hmc5883l *hmc5883l);
-int read_axis(t_hmc5883l *hmc5883l);
+void close_hms5883l(void);
+int read_X_axis(void);
+int read_Y_axis(void);
+int read_Z_axis(void);
 
 #endif /* _HMC5883L_H_ */

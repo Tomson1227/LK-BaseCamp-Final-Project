@@ -15,7 +15,7 @@ typedef enum e_mode {
     MODE_7
 }            t_mode;
 
-typedef struct s_devices{
+typedef struct s_devices {
     t_mode mode;
     t_hmc5883l  hmc5883l;
     t_stepper   stepper; 
@@ -24,5 +24,6 @@ typedef struct s_devices{
 
 int init_device(t_devices *device);
 void close_device(t_devices *device);
+void scan_sircul(int mDegrees);
 
 #endif /* _MAIN_H_ */

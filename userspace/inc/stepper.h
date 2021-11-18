@@ -25,12 +25,12 @@ typedef struct s_stepper
 }              t_stepper;
 
 int init_stepper_motor(t_stepper *stepper);
-void close_stepper_motor(t_stepper *stepper);
+void close_stepper_motor(void);
 
-int stepper_is_busy(t_stepper *stepper);
-int stepper_read_speed(t_stepper *stepper);
-int stepper_set_speed(t_stepper *stepper, int speed);
-int stepper_rotate_steps(t_stepper *stepper, int steps);
-int stepper_rotate_angle(t_stepper *stepper, int angle);
+int stepper_is_busy(void);
+int stepper_read_speed(void);
+int stepper_set_speed(int speed);
+int stepper_rotate_steps(int steps);
+int stepper_rotate_angle(int mDeg);
 
 #endif /* _STEPPER_H_ */

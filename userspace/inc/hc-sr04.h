@@ -21,7 +21,7 @@ typedef struct s_hc_sr04
 }              t_hc_sr04;
 
 int init_hc_sr04(t_hc_sr04 *hc_sr04);
-void close_hc_sr04(t_hc_sr04 *hc_sr04);
-int read_distance(t_hc_sr04 *hc_sr04);
+void close_hc_sr04(void);
+int read_distance(void);
 
 #endif /* _HC_SR_04_H_ */
