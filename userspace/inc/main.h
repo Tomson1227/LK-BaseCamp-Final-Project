@@ -25,5 +25,7 @@ typedef struct s_devices {
 int init_device(t_devices *device);
 void close_device(t_devices *device);
 void scan_sircul(int mDegrees);
+void take_current_position(void);
+void scan_sector(int mOffset, int mAngle, int mDegree);
 
 #endif /* _MAIN_H_ */

@@ -34,13 +34,17 @@ void close_device(t_devices *device)
 }
 
 /*
-*   @brief Scan distance in sector
+*   @brief Get current space position
 */
 void take_current_position(void)
 {
-
+    int X_axis, Y_axis, Z_axis;
+    X_axis = read_X_axis();
+    Y_axis = read_Y_axis();
+    Z_axis = read_Z_axis();
+    printf("| X axis | Y axis | Z axis |\n");
+    printf("| %6d | %6d | %6d |\n", X_axis, Y_axis, Z_axis);
 }
-
 
 /*
 *   @brief Scan distance in sector
@@ -51,7 +55,36 @@ void take_current_position(void)
 */
 void scan_sector(int mOffset, int mAngle, int mDegree)
 {
+    int distance, X_axis, Y_axis, Z_axis;
+    int BackAngle = -1 * (mOffset + mAngle);
+    int count = 0;
+    int steps = mAngle / mDegree;
 
+    stepper_rotate_angle(mOffset);
+
+    printf("/*********************************************************\\\n");
+    printf("| Angle [mdeg] | X axis | Y axis | Z axis | Distance [mm] |\n");
+
+    while(stepper_is_busy());
+
+    for(; count < steps; ++count) {
+        distance = read_distance();
+        X_axis = read_X_axis();
+        Y_axis = read_Y_axis();
+        Z_axis = read_Z_axis();
+        printf("| %8d.%3d | %6d | %6d | %6d | %13d |\n", 
+            mAngle / 100, mAngle % 100, X_axis, Y_axis, Z_axis, distance);
+
+        stepper_rotate_angle(mDegree);
+        while(stepper_is_busy());
+
+        mAngle += mDegree;
+    }
+    
+    printf("\\*********************************************************/\n");
+
+    stepper_rotate_angle(BackAngle);
+    while(stepper_is_busy());
 }
 
 /*
@@ -76,7 +109,7 @@ void scan_sircul(int mDegrees)
         printf("| %8d.%3d | %6d | %6d | %6d | %13d |\n", 
             mAngle / 100, mAngle % 100, X_axis, Y_axis, Z_axis, distance);
 
-        stepper_rotate_steps(mDegrees);
+        stepper_rotate_angle(mDegrees);
         while(stepper_is_busy());
 
         mAngle += mDegrees;
@@ -84,10 +117,6 @@ void scan_sircul(int mDegrees)
 
     printf("\\*********************************************************/\n");
 
-    while(count > 0) {
-        stepper_rotate_steps(mDegrees);
-        while(stepper_is_busy());
-
-        count--;
-    }
+    stepper_rotate_angle(-1 * (mDegrees * count));
+    while(stepper_is_busy());
 }
