@@ -1,4 +1,8 @@
-obj-$(MODE) := hmc5883l.o
+ifndef MODE
+MODE=m
+endif
+
+obj-$(MODE) := hmc5883l.o   
 
 ALL:
 	$(MAKE) -C ~/repos/busybox/_install/lib/modules/5.9.16/build M=$(PWD) modules

@@ -4,13 +4,12 @@
 / {
     compatible = "ti,beaglebone", "ti,beaglebone-black";
 
-	exlusive-use = "P0_26", "P1_12", "P1_14", "P2_1";
 	fragment@0 {
 		target = <&gpio1>;
 		__overlay__ {
 			stepper: stepper {
 				compatible = "stepper";
-
+				pins = <44 26 46 65>;
 				phase@1 {
 					gpios = <&gpio1 44 GPIO_ACTIVE_LOW>;
 					default-state = "off";

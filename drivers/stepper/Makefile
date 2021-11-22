@@ -1,3 +1,7 @@
+ifndef MODE
+MODE=m
+endif
+
 obj-$(MODE) := stepper_motor.o
 
 ALL:
