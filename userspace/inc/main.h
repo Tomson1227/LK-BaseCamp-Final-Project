@@ -20,6 +20,7 @@ typedef struct s_devices {
     t_hmc5883l  hmc5883l;
     t_stepper   stepper; 
     t_hc_sr04   hc_sr04; 
+    int repeat;
 }              t_devices;
 
 int init_device(t_devices *device);

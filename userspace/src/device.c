@@ -3,7 +3,7 @@
 int init_device(t_devices *device)
 {
     int rc = 0;
-
+    device->repeat = 1;
     rc = init_hms5883l(&device->hmc5883l);
     
     if(rc != EXIT_SUCCESS)

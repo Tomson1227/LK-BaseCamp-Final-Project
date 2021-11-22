@@ -57,16 +57,20 @@ int stepper_read_speed(void)
     return speed;
 }
 
-/* speed limits [1 ; 640] */
+/* speed limits [1 ; 18] */
 int stepper_set_speed(int speed)
 {
     char buff[BUFF_SIZE];
     int rc;
 
-    if(speed > 640)
-        speed = 640;
-    else if (speed < 1)
+    if(speed > 18) {
+        speed = 18;
+        printf("speed limits [1 ; 18]\n");
+    }
+    else if (speed < 1) {
         speed = 1;
+        printf("speed limits [1 ; 18]\n");
+    }
 
     sprintf(buff, "%d", speed);
     rc = write(pSteper->motor_speed_fd, buff, strlen(buff));
