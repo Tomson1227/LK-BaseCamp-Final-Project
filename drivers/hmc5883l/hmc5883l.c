@@ -31,9 +31,9 @@ static int hmc5883l_read_data(void)
 	hmc5883l.Z_axis = i2c_smbus_read_word_data(drv_client, REG_AXIS_Z_MSB);
 
 	dev_info(&drv_client->dev, "read data:\n");
-	dev_info(&drv_client->dev, "X_axis: %04x\n", hmc5883l.X_axis);
-	dev_info(&drv_client->dev, "Y_axis: %04x\n", hmc5883l.Y_axis);
-	dev_info(&drv_client->dev, "Z_axis: %04x\n", hmc5883l.Z_axis);
+	dev_info(&drv_client->dev, "X_axis: %06d\n", hmc5883l.X_axis);
+	dev_info(&drv_client->dev, "Y_axis: %06d\n", hmc5883l.Y_axis);
+	dev_info(&drv_client->dev, "Z_axis: %06d\n", hmc5883l.Z_axis);
 
 	return 0;
 }
